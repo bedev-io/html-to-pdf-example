@@ -1,0 +1,21 @@
+{
+  "name": "html-to-pdf-example",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "ts-node src/index.ts"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@types/express": "^5.0.0",
+    "@types/mustache": "^4.2.5",
+    "@types/node": "^22.13.2",
+    "express": "^4.21.2",
+    "mustache": "^4.2.0",
+    "puppeteer": "^24.2.0"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3"
+  }
+}

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Facture {{invoice.sequenceFormatted}}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;1,100&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap" rel="stylesheet">
+  <style>
+      html {
+          -webkit-print-color-adjust: exact;
+      }
+      * {
+          font-family: Poppins, Lato, Arial, SansSerif, serif !important;
+          color: #2a3050;
+      }
+
+      .align-items-center {
+          align-items: center;
+      }
+      .justify-center {
+          justify-content: center;
+      }
+      .justify-end {
+          justify-content: flex-end;
+      }
+      .justify-space-between {
+          justify-content: space-between;
+      }
+      .h-stack {
+          display: flex;
+          flex-direction: row;
+      }
+      .v-stack {
+          display: flex;
+          flex-direction: column;
+      }
+
+      .container {
+          width: 800px;
+          background-color: white;
+          min-height: 500px;
+          padding: 16px;
+          display: flex;
+          flex-direction: column;
+      }
+
+      h1 {
+          margin: 0;
+          font-size: 1.5rem;
+          font-weight: 400;
+      }
+
+      strong, p {
+          margin: 0;
+          font-size: 0.8rem;
+      }
+
+      .w-100 {
+          width: 100%;
+      }
+
+      .mt-5 {
+          margin-top: 3rem;
+      }
+      .py-2 {
+          padding-top: 1rem;
+          padding-bottom: 1rem;
+      }
+      .p-2 {
+          padding: 1rem;
+      }
+
+      .secondary {
+          color: #2A8DD4FF !important;
+      }
+
+      .text-justify {
+          text-align: justify;
+      }
+      .text-center {
+          text-align: center;
+      }
+  </style>
+  <meta charset="utf8" />
+</head>
+<body>
+<div class="container">
+  <div class="h-stack justify-space-between">
+
+    <div class="v-stack">
+      <h1>Facture</h1>
+      <p>Numéro de facture: {{invoice.sequenceFormatted}}</p>
+      <p>Date d'émission: {{sentAt}}</p>
+      <p>Date d'échéance: {{dueAt}}</p>
+      {{#isBankTransfer}}
+      <p>Méthode de paiement: Par virement bancaire</p>
+      {{/isBankTransfer}}
+    </div>
+
+    <div class="v-stack">
+      {{#accountLogo}}
+      <img src="{{accountLogo.uri}}" alt="logo" width="100" height="100" />
+      {{/accountLogo}}
+    </div>
+  </div>
+
+  <div class="h-stack justify-space-between w-100 mt-5">
+    <div class="v-stack">
+      {{#account.name}}
+      <p><strong>{{account.name}}</strong></p>
+      {{/account.name}}
+      {{#sellerAddressStreet}}
+      <p>{{sellerAddressStreet}}</p>
+      {{/sellerAddressStreet}}
+      {{#sellerAddressCity}}
+      <p>{{sellerAddressCity}}</p>
+      {{/sellerAddressCity}}
+      {{#sellerAddressCountry}}
+      <p>{{sellerAddressCountry}}</p>
+      {{/sellerAddressCountry}}
+      {{#account.vatNumber}}
+      <p>TVA: {{account.vatNumber}}</p>
+      {{/account.vatNumber}}
+      {{#account.invoiceEmail}}
+      <p>E-mail: {{account.invoiceEmail}}</p>
+      {{/account.invoiceEmail}}
+      {{#account.invoicePhone}}
+      <p>Téléphone: {{account.invoicePhone}}</p>
+      {{/account.invoicePhone}}
+    </div>
+
+    <div class="v-stack">
+      {{#customer.name}}
+      <p><strong>{{customer.name}}</strong></p>
+      {{/customer.name}}
+      {{#customer.vatNumber}}
+      <p>TVA: {{customer.vatNumber}}</p>
+      {{/customer.vatNumber}}
+      {{#customer.invoiceContactName}}
+      <p>Contact: {{customer.invoiceContactName}}</p>
+      {{/customer.invoiceContactName}}
+      {{#customer.invoiceContactEmail}}
+      <p>E-mail: {{customer.invoiceContactEmail}}</p>
+      {{/customer.invoiceContactEmail}}
+      {{#customer.invoiceContactPhone}}
+      <p>Téléphone: {{customer.invoiceContactPhone}}</p>
+      {{/customer.invoiceContactPhone}}
+    </div>
+  </div>
+
+  <div class="v-stack w-100 mt-5">
+    {{#invoice.name}}
+    <strong class="secondary" style="font-size: 20px;">{{invoice.name}}</strong>
+    {{/invoice.name}}
+    <hr class="w-100" style="border-top: thin solid lightgrey;" />
+  </div>
+
+  <div class="h-stack justify-space-between py-2" style="gap: 1rem;">
+    <div class="v-stack" style="width: 55%">
+      <strong>Dénomination</strong>
+    </div>
+    <div class="v-stack" style="width: 8%">
+      <strong>Quantité</strong>
+    </div>
+    <div class="v-stack" style="width: 15%">
+      <strong>Prix unitaire (HT)</strong>
+    </div>
+    <div class="v-stack" style="width: 9%">
+      <strong>Total (HT)</strong>
+    </div>
+    <div class="v-stack" style="width: 9%">
+      <strong>TVA (%)</strong>
+    </div>
+  </div>
+
+  {{#invoiceItems}}
+  <div class="h-stack justify-space-between py-2" style="gap: 1rem; border-top: thin solid lightgrey;">
+    <div class="v-stack justify-center" style="width: 55%">
+      <strong>{{denomination}}</strong>
+      <p>{{description}}</p>
+    </div>
+    <div class="v-stack justify-center" style="width: 8%">
+      <p>{{quantity}}</p>
+    </div>
+    <div class="v-stack justify-center" style="width: 15%">
+      <p>{{unitPrice}}</p>
+    </div>
+    <div class="v-stack justify-center" style="width: 9%">
+      <p>{{excludedVatAmount}}</p>
+    </div>
+    <div class="v-stack justify-center" style="width: 9%">
+      <p>{{vatPercentage}}%</p>
+    </div>
+  </div>
+  {{/invoiceItems}}
+
+  <div class="h-stack justify-end">
+    <div class="v-stack" style="width: 30%">
+      <div class="h-stack py-2 align-items-center justify-space-between" style="border-bottom: thin solid lightgrey;">
+        <p style="font-size: 14px">TOTAL (HT)</p>
+        <strong style="font-size: 14px">{{totalExcludedVatAmount}}</strong>
+      </div>
+      {{#totalVatByPercentage}}
+      <div class="h-stack py-2 align-items-center justify-space-between" style="border-bottom: thin solid lightgrey;">
+        <p style="font-size: 14px">TVA {{vatPercentage}}%</p>
+        <strong style="font-size: 14px">{{formattedVatAmount}}</strong>
+      </div>
+      {{/totalVatByPercentage}}
+      <div class="h-stack py-2 align-items-center justify-space-between" style="border-bottom: thin solid lightgrey;">
+        <p style="font-size: 14px">TOTAL (TTC)</p>
+        <strong style="font-size: 16px">{{totalAllTaxesIncluded}}</strong>
+      </div>
+    </div>
+  </div>
+
+  {{#paymentCondition.description}}
+  <div class="h-stack justify-center p-2 mt-5">
+    <p class="text-justify">{{paymentCondition.description}}</p>
+  </div>
+  {{/paymentCondition.description}}
+
+  {{#invoice.specialMention}}
+  <div class="h-stack justify-center p-2">
+    <p class="text-justify">{{invoice.specialMention}}</p>
+  </div>
+  {{/invoice.specialMention}}
+
+  {{#isBankTransfer}}
+  <div class="h-stack justify-center p-2 mt-5" style="background: #2a8dd4">
+    <strong class="text-center" style="color: white;">Le montant total toutes taxes comprises de {{totalAllTaxesIncluded}}€ est à verser sur le compte {{paymentMethod.bankAccountNumber}} avec en communication le numéro de facture {{invoice.sequenceFormatted}}.</strong>
+  </div>
+  {{/isBankTransfer}}
+</div>
+</body>
+</html>
